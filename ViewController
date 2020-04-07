@@ -1,43 +1,57 @@
 
 class ViewController: UIViewController, UIScrollViewDelegate {
 
-tableView.estimatedRowHeight = UITableView.automaticDimension
-tableView.rowHeight = UITableView.automaticDimension
-        
-        
-         //подгрузка товаров
-    func pagination(_ completion: (()->())?){
-        
-        SmartNetworkSevrice.getGoods(with: url) { [unowned self] (data) in
-            guard data.modals.count > 0 else {
-                self.tableView.tableFooterView = nil
-                return
-            }
-            
-            self.goods.append(contentsOf: data.modals)
-            self.offSet += data.modals.count
-            DispatchQueue.main.async {
-                let indexPath = IndexPath(row: 0, section: 0)
-                self.tableView.tableFooterView = nil
-                if self.goods.count == data.modals.count || self.isRefresh {
-                    self.tableView.reloadRows(at: [indexPath], with: .none)
-                } else {
-                    if let cell = self.tableView.cellForRow(at: indexPath) as? TVCellGoods {
-                        UIView.performWithoutAnimation {
-                            self.tableView.beginUpdates()
-                            cell.insertGoods(data.modals)
-                            cell.layoutIfNeeded()
-                            cell.collectionViewHeight.constant = cell.collectionView.collectionViewLayout.collectionViewContentSize.height
-                            self.tableView.endUpdates()
-                        }
-                        
-                    }
-                }
-                completion?()
-            }
-        }
-        
+
+  override func viewDidLoad() {
+        super.viewDidLoad()
+        setting()
     }
+    
+  func setting(){
+   
+   getData()
+   
+   tableView.dataSource = self
+   tableView.delegate = self
+        
+   tableView.estimatedRowHeight = UITableView.automaticDimension 
+   tableView.rowHeight = UITableView.automaticDimension    
+        
+  }
+  
+         //подгрузка товаров
+   func pagination(_ completion: (()->())?){
+        
+      SmartNetworkSevrice.getGoods(with: url) { [unowned self] (data) in
+         guard data.modals.count > 0 else {
+             self.tableView.tableFooterView = nil
+             return
+         }
+            
+         self.goods.append(contentsOf: data.modals)
+         self.offSet += data.modals.count
+         DispatchQueue.main.async {
+             let indexPath = IndexPath(row: 0, section: 0)
+             self.tableView.tableFooterView = nil
+             if self.goods.count == data.modals.count || self.isRefresh {
+                self.tableView.reloadRows(at: [indexPath], with: .none)
+             } else {
+                if let cell = self.tableView.cellForRow(at: indexPath) as? TVCellGoods {
+                    UIView.performWithoutAnimation {
+                        self.tableView.beginUpdates()
+                        cell.insertGoods(data.modals)
+                        cell.layoutIfNeeded()
+                        cell.collectionViewHeight.constant = cell.collectionView.collectionViewLayout.collectionViewContentSize.height
+                        self.tableView.endUpdates()
+                     }
+                        
+                }
+             }
+            completion?()
+         }
+     }
+        
+ }
     
      // определяет низ экрана
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
