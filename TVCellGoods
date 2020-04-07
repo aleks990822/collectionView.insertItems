@@ -1,0 +1,48 @@
+class TVCellGoods: UITableViewCell {
+    
+    @IBOutlet weak var collectionView:UICollectionView!
+    @IBOutlet weak var collectionViewHeight:NSLayoutConstraint!
+
+    weak var delegate:CallDelegate?
+    var bestGoods = [Goods]() // лучшие товары
+    var goods = [Goods]() // все товары
+    var categories = [Menu]()
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.tag = 2
+        collectionView.isScrollEnabled = false
+        
+    }
+    
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+        
+        // Configure the view for the selected state
+    }
+    
+    func configure(_ best:[Goods],_ goods:[Goods], _ category:[Menu]) {
+        
+        self.bestGoods = best
+        self.goods = goods
+        self.categories = category
+        self.collectionView.reloadData()
+        
+    }
+    
+    func insertGoods(_ data:[Goods]) {
+        
+        self.goods.append(contentsOf: data)
+        let count = self.bestGoods.count + self.categories.count  + self.goods.count
+        let indexPaths = ((count - data.count) ..< count)
+            .map { IndexPath(row: $0, section: 0) }
+        self.collectionView.performBatchUpdates({
+            self.collectionView.insertItems(at: indexPaths)
+        }, completion: nil)
+        
+    }
+    
+}
