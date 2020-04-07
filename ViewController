@@ -50,9 +50,7 @@ class ViewController: UIViewController, UIScrollViewDelegate {
             completion?()
          }
      }
-        
- }
-    
+          
      // определяет низ экрана
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
@@ -70,6 +68,8 @@ class ViewController: UIViewController, UIScrollViewDelegate {
             }
         }
     
+       }
+       
     }
     
 extension ViewController: UITableViewDataSource {
